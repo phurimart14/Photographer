@@ -5,6 +5,7 @@ A simple portfolio website for a photography project.
 ## Overview
 
 This repository contains:
+
 - `portfolio.html` - main portfolio page
 - `tweaks-panel.jsx` - React component for tweaks panel
 - `optimize.js` - optimization script
