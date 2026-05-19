@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phurimart Sudanich — Portrait & Street Photographer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<style>
+  /* ─────────────────────────────────────────────────────
+     Theme tokens — overwritten live by the Tweaks panel
+  ───────────────────────────────────────────────────── */
+  :root{
+    /* default: warm cream */
+    --bg:        #f1e8d8;
+    --bg-alt:    #e6d9c2;
+    --paper:     #f7f0e2;
+    --ink:       #2a201a;
+    --ink-soft:  #5b4a3c;
+    --muted:     #8d7a66;
+    --accent:    #b8633a;
+    --hairline:  rgba(42,32,26,.18);
+
+    --ff-display: 'Outfit', system-ui, sans-serif;
+    --ff-body:    'Outfit', system-ui, sans-serif;
+    --ff-accent:  'Instrument Serif', Georgia, serif;
+
+    --maxw: 1440px;
+    --pad-x: clamp(20px, 4vw, 64px);
+  }
+
+  /* Palette swap classes — set on <body> by Tweaks */
+  body.palette-cream{
+    --bg:#f1e8d8; --bg-alt:#e6d9c2; --paper:#f7f0e2;
+    --ink:#2a201a; --ink-soft:#5b4a3c; --muted:#8d7a66;
+    --accent:#b8633a; --hairline:rgba(42,32,26,.18);
+  }
+  body.palette-sand{
+    --bg:#ece4d4; --bg-alt:#d9cdb5; --paper:#f3ecdb;
+    --ink:#3a2e21; --ink-soft:#6c5a45; --muted:#9b8870;
+    --accent:#a55a2e; --hairline:rgba(58,46,33,.2);
+  }
+  body.palette-rose{
+    --bg:#f3e6df; --bg-alt:#e6d1c5; --paper:#faf0ea;
+    --ink:#3a2520; --ink-soft:#6d4a40; --muted:#a07f74;
+    --accent:#c46a55; --hairline:rgba(58,37,32,.18);
+  }
+  body.palette-mono{
+    --bg:#ece9e3; --bg-alt:#dcd7cd; --paper:#f5f3ee;
+    --ink:#1f1d1a; --ink-soft:#4a4640; --muted:#857f74;
+    --accent:#2a2520; --hairline:rgba(31,29,26,.18);
+  }
+  body.palette-dusk{
+    --bg:#1d1a17; --bg-alt:#2a2520; --paper:#26211c;
+    --ink:#efe6d6; --ink-soft:#bfb19c; --muted:#8c7e68;
+    --accent:#d98a55; --hairline:rgba(239,230,214,.18);
+  }
+
+  /* Font families set by Tweaks */
+  body.font-outfit  { --ff-display:'Outfit', sans-serif; --ff-body:'Outfit', sans-serif; }
+  body.font-dm      { --ff-display:'DM Sans', sans-serif; --ff-body:'DM Sans', sans-serif; }
+  body.font-mixed   { --ff-display:'Outfit', sans-serif; --ff-body:'DM Sans', sans-serif; }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{background:var(--bg); color:var(--ink); font-family:var(--ff-body); -webkit-font-smoothing:antialiased;}
+  body{transition: background-color .4s ease, color .4s ease;}
+  img{display:block; max-width:100%; height:auto;}
+
+  ::selection{ background:var(--accent); color:var(--paper); }
+
+  /* ─────────── Top bar ─────────── */
+  .topbar{
+    position:fixed; inset:0 0 auto 0; z-index:30;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 22px var(--pad-x);
+    backdrop-filter: blur(14px) saturate(1.1);
+    background: color-mix(in oklab, var(--bg) 78%, transparent);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .topbar .mark{
+    font-family: var(--ff-display);
+    font-weight: 500; letter-spacing: -0.01em; font-size: 17px;
+    display:flex; align-items:baseline; gap:10px;
+  }
+  .topbar .mark em{
+    font-family: var(--ff-accent); font-style: italic; font-weight: 400;
+    color: var(--accent); font-size: 18px;
+  }
+  .topbar nav{ display:flex; gap: 28px; }
+  .topbar nav a{
+    color: var(--ink-soft); text-decoration:none;
+    font-size: 13px; letter-spacing: .12em; text-transform: uppercase;
+    font-weight: 500;
+    transition: color .2s;
+  }
+  .topbar nav a:hover{ color: var(--accent); }
+  @media (max-width: 640px){ .topbar nav{ display:none; } }
+
+  /* ─────────── Hero ─────────── */
+  .hero{
+    padding: 140px var(--pad-x) 80px;
+    max-width: var(--maxw); margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap: clamp(24px, 4vw, 64px);
+    align-items: end;
+    min-height: 100vh;
+  }
+  .hero-text{ padding-bottom: 20px; }
+  .hero-eyebrow{
+    font-size: 12px; letter-spacing: .3em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 28px;
+    display:flex; align-items:center; gap:14px;
+  }
+  .hero-eyebrow::before{
+    content:""; width: 40px; height:1px; background: var(--ink-soft);
+  }
+  .hero-title{
+    font-family: var(--ff-display);
+    font-weight: 300;
+    font-size: clamp(48px, 7.4vw, 116px);
+    line-height: .92; letter-spacing: -0.035em;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .hero-title em{
+    font-family: var(--ff-accent);
+    font-style: italic; font-weight: 400;
+    color: var(--accent);
+    letter-spacing: -0.01em;
+  }
+  .hero-sub{
+    margin-top: 32px;
+    font-size: clamp(15px, 1.2vw, 17px);
+    line-height: 1.55; color: var(--ink-soft);
+    max-width: 460px;
+  }
+  .hero-meta{
+    margin-top: 40px;
+    display: flex; gap: 28px;
+    font-size: 12px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .hero-meta span{display:flex; flex-direction:column; gap:6px;}
+  .hero-meta strong{
+    font-family: var(--ff-display); font-weight:500; font-size: 22px;
+    color: var(--ink); letter-spacing: -0.01em; text-transform: none;
+  }
+
+  .hero-image{
+    position: relative;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: var(--bg-alt);
+  }
+  .hero-image img{
+    width: 100%; height: 100%; object-fit: cover;
+    filter: saturate(.95) contrast(1.02);
+  }
+  .hero-image .caption{
+    position:absolute; left:18px; bottom:18px;
+    font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--paper);
+    background: rgba(0,0,0,.32);
+    backdrop-filter: blur(6px);
+    padding: 8px 12px;
+  }
+
+  @media (max-width: 860px){
+    .hero{ grid-template-columns: 1fr; padding-top: 110px; min-height: auto; }
+    .hero-image{ order: -1; aspect-ratio: 4/5; max-height: 70vh; }
+  }
+
+  /* ─────────── Marquee strip ─────────── */
+  .strip{
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+    padding: 18px 0;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  .strip-track{
+    display: flex; gap: 64px; white-space: nowrap;
+    animation: scroll-x 40s linear infinite;
+    font-family: var(--ff-display);
+    font-size: clamp(20px, 2.4vw, 32px);
+    color: var(--ink-soft); font-weight: 300;
+    letter-spacing: -0.01em;
+  }
+  .strip-track span{ display:inline-flex; align-items:center; gap: 64px; }
+  .strip-track span::after{
+    content:""; width:8px; height:8px; border-radius:50%;
+    background: var(--accent);
+  }
+  @keyframes scroll-x{
+    from{ transform: translateX(0); }
+    to  { transform: translateX(-50%); }
+  }
+
+  /* ─────────── Section header ─────────── */
+  .sec{
+    max-width: var(--maxw); margin: 0 auto;
+    padding: clamp(80px, 10vw, 140px) var(--pad-x);
+  }
+  .sec-head{
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 32px;
+    align-items: end;
+    margin-bottom: clamp(40px, 6vw, 72px);
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .sec-no{
+    font-family: var(--ff-accent);
+    font-style: italic;
+    font-size: 56px; line-height: 1; color: var(--accent);
+    font-weight: 400;
+  }
+  .sec-title{
+    font-family: var(--ff-display);
+    font-weight: 300; font-size: clamp(36px, 5vw, 68px);
+    letter-spacing: -0.025em; line-height: 1;
+  }
+  .sec-meta{
+    text-align: right;
+    font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--muted); line-height: 1.6;
+  }
+  .sec-meta b{
+    display:block; font-family: var(--ff-display); font-weight:500;
+    color: var(--ink); font-size: 13px; letter-spacing: .14em;
+  }
+  @media (max-width: 640px){
+    .sec-head{ grid-template-columns: 60px 1fr; }
+    .sec-meta{ grid-column: 1 / -1; text-align: left; }
+    .sec-no{ font-size: 42px; }
+  }
+
+  /* ─────────── Galleries (layout variants) ─────────── */
+  /* default = "editorial" mixed layout, each section custom */
+  .gallery{ display: grid; gap: clamp(16px, 2vw, 28px); }
+  .frame{
+    position: relative; overflow:hidden; background: var(--bg-alt);
+  }
+  .frame img{
+    width:100%; height:100%; object-fit: cover;
+    transition: transform 1.2s cubic-bezier(.2,.7,.2,1), filter .6s;
+  }
+  .frame:hover img{ transform: scale(1.03); }
+  .frame figcaption{
+    position:absolute; left: 14px; bottom: 14px;
+    font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--paper); background: rgba(0,0,0,.34);
+    padding: 6px 10px; backdrop-filter: blur(4px);
+    opacity: 0; transition: opacity .3s;
+  }
+  .frame:hover figcaption{ opacity: 1; }
+
+  /* Portrait gallery — editorial mix (7 frames) */
+  #portrait .gallery{
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: 80px;
+  }
+  #portrait .p1{ grid-column: 1 / 6;  grid-row: span 9; }
+  #portrait .p2{ grid-column: 7 / 13; grid-row: span 6; }
+  #portrait .p3{ grid-column: 7 / 10; grid-row: span 5; }
+  #portrait .p4{ grid-column: 10 / 13; grid-row: span 5; }
+  #portrait .p5{ grid-column: 1 / 7;  grid-row: span 8; }
+  #portrait .p6{ grid-column: 7 / 13; grid-row: span 8; }
+  #portrait .p7{ grid-column: 1 / 13; grid-row: span 6; }
+  @media (max-width: 760px){
+    #portrait .gallery{ grid-template-columns: repeat(2, 1fr); grid-auto-rows: 56px; }
+    #portrait .p1{ grid-column: 1 / -1; grid-row: span 8; }
+    #portrait .p2{ grid-column: 1 / -1; grid-row: span 5; }
+    #portrait .p3{ grid-column: 1 / 2; grid-row: span 5; }
+    #portrait .p4{ grid-column: 2 / 3; grid-row: span 5; }
+    #portrait .p5{ grid-column: 1 / -1; grid-row: span 7; }
+    #portrait .p6{ grid-column: 1 / -1; grid-row: span 7; }
+    #portrait .p7{ grid-column: 1 / -1; grid-row: span 5; }
+  }
+
+  /* Street gallery — diptych (2 frames) */
+  #street .gallery{
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: 80px;
+  }
+  #street .s1{ grid-column: 1 / 8;  grid-row: span 8; }
+  #street .s2{ grid-column: 8 / 13; grid-row: span 8; align-self: end; }
+  @media (max-width: 760px){
+    #street .gallery{ grid-template-columns: 1fr; grid-auto-rows: 56px; }
+    #street .s1, #street .s2{ grid-column: 1 / -1; grid-row: span 6; }
+  }
+
+  /* Graduation gallery — 3-column rhythm */
+  #graduation .gallery{
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: 80px;
+  }
+  #graduation .g1{ grid-column: 1 / 5; grid-row: span 9; }
+  #graduation .g2{ grid-column: 5 / 13; grid-row: span 6; }
+  #graduation .g3{ grid-column: 5 / 13; grid-row: span 5; }
+  @media (max-width: 760px){
+    #graduation .gallery{ grid-template-columns: 1fr; grid-auto-rows: 56px; }
+    #graduation .g1{ grid-column:1/-1; grid-row: span 9; }
+    #graduation .g2{ grid-column:1/-1; grid-row: span 6; }
+    #graduation .g3{ grid-column:1/-1; grid-row: span 5; }
+  }
+
+  /* Lifestyle gallery — 4-grid */
+  #lifestyle .gallery{
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: 80px;
+  }
+  #lifestyle .l1{ grid-column: 1 / 5; grid-row: span 8; }
+  #lifestyle .l2{ grid-column: 5 / 9; grid-row: span 6; }
+  #lifestyle .l3{ grid-column: 9 / 13; grid-row: span 7; }
+  #lifestyle .l4{ grid-column: 5 / 13; grid-row: span 5; align-self: end; }
+  @media (max-width: 760px){
+    #lifestyle .gallery{ grid-template-columns: repeat(2,1fr); grid-auto-rows: 56px; }
+    #lifestyle .l1{ grid-column:1/-1; grid-row: span 7; }
+    #lifestyle .l2{ grid-column:1/2; grid-row: span 6; }
+    #lifestyle .l3{ grid-column:2/3; grid-row: span 6; }
+    #lifestyle .l4{ grid-column:1/-1; grid-row: span 6; }
+  }
+
+  /* ─── LAYOUT VARIANTS (driven by body class) ─── */
+  /* Layout: grid — uniform masonry-like grid */
+  body.layout-grid #portrait .gallery,
+  body.layout-grid #street .gallery,
+  body.layout-grid #graduation .gallery,
+  body.layout-grid #lifestyle .gallery{
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: auto;
+  }
+  body.layout-grid .frame{ grid-column: span 1 !important; grid-row: span 1 !important; aspect-ratio: 3/4; }
+  body.layout-grid .frame.is-wide{ aspect-ratio: 3/2; }
+  @media (max-width:760px){
+    body.layout-grid #portrait .gallery,
+    body.layout-grid #street .gallery,
+    body.layout-grid #graduation .gallery,
+    body.layout-grid #lifestyle .gallery{ grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* Layout: full — single-column full-bleed stack */
+  body.layout-full .sec{ max-width: 100%; padding-left: 0; padding-right: 0; }
+  body.layout-full .sec-head{ max-width: var(--maxw); margin-left:auto; margin-right:auto; padding: 0 var(--pad-x) 28px; }
+  body.layout-full #portrait .gallery,
+  body.layout-full #street .gallery,
+  body.layout-full #graduation .gallery,
+  body.layout-full #lifestyle .gallery{
+    grid-template-columns: 1fr; grid-auto-rows: auto; gap: 4px;
+  }
+  body.layout-full .frame{ grid-column: 1 / -1 !important; grid-row: auto !important; aspect-ratio: 16/10; }
+  body.layout-full .frame.is-portrait{ aspect-ratio: 3/4; max-width: 900px; margin: 0 auto; }
+
+  /* Layout: scroll — horizontal scroll rails */
+  body.layout-scroll .gallery{
+    display: flex !important; grid-template-columns: none !important;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    gap: 16px; padding-bottom: 24px;
+    grid-auto-rows: unset;
+  }
+  body.layout-scroll .frame{
+    flex: 0 0 min(420px, 78vw);
+    height: clamp(380px, 60vh, 620px);
+    grid-column: auto !important; grid-row: auto !important;
+    scroll-snap-align: start;
+  }
+  body.layout-scroll .gallery::-webkit-scrollbar{ height: 6px; }
+  body.layout-scroll .gallery::-webkit-scrollbar-thumb{ background: var(--ink-soft); }
+
+  /* ─────────── About ─────────── */
+  .about{
+    background: var(--bg-alt);
+    padding: clamp(80px, 10vw, 140px) 0;
+    margin-top: clamp(60px, 8vw, 100px);
+  }
+  .about-inner{
+    max-width: var(--maxw); margin: 0 auto;
+    padding: 0 var(--pad-x);
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: clamp(32px, 5vw, 80px);
+    align-items: center;
+  }
+  .about img{
+    width: 100%; aspect-ratio: 4/5; object-fit: cover;
+  }
+  .about-eyebrow{
+    font-size: 12px; letter-spacing: .3em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 24px;
+    display:flex; align-items:center; gap:14px;
+  }
+  .about-eyebrow::before{ content:""; width:40px; height:1px; background:var(--ink-soft); }
+  .about h2{
+    font-family: var(--ff-display); font-weight: 300;
+    font-size: clamp(34px, 4.4vw, 60px); line-height: 1.02;
+    letter-spacing: -0.025em; margin-bottom: 28px;
+  }
+  .about h2 em{
+    font-family: var(--ff-accent); font-style:italic; font-weight: 400;
+    color: var(--accent);
+  }
+  .about p{
+    font-size: clamp(15px, 1.15vw, 17px); line-height: 1.65;
+    color: var(--ink-soft); max-width: 560px;
+    margin-bottom: 16px;
+  }
+  .about-stats{
+    display: flex; gap: 40px; margin-top: 40px;
+    padding-top: 32px; border-top: 1px solid var(--hairline);
+  }
+  .about-stats div{ display:flex; flex-direction:column; gap:6px; }
+  .about-stats strong{
+    font-family: var(--ff-display); font-weight: 400;
+    font-size: 36px; letter-spacing: -0.02em; color: var(--ink);
+  }
+  .about-stats span{
+    font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  @media (max-width: 800px){
+    .about-inner{ grid-template-columns: 1fr; }
+  }
+
+  /* ─────────── Footer / contact ─────────── */
+  .foot{
+    padding: clamp(80px, 10vw, 140px) var(--pad-x) 48px;
+    max-width: var(--maxw); margin: 0 auto;
+  }
+  .foot-grid{
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: clamp(24px, 4vw, 80px);
+    padding-bottom: 60px; border-bottom: 1px solid var(--hairline);
+  }
+  .foot h3{
+    font-family: var(--ff-display); font-weight: 300;
+    font-size: clamp(36px, 5vw, 72px);
+    letter-spacing: -0.025em; line-height: .95;
+  }
+  .foot h3 em{
+    font-family: var(--ff-accent); font-style: italic; color: var(--accent);
+    font-weight: 400;
+  }
+  .foot-col h4{
+    font-size: 11px; letter-spacing: .25em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 16px; font-weight: 500;
+  }
+  .foot-col a, .foot-col p{
+    display:block;
+    color: var(--ink); text-decoration: none;
+    font-size: 17px; line-height: 1.6;
+    border-bottom: 1px solid transparent;
+    transition: border-color .2s;
+    width: fit-content;
+  }
+  .foot-col a:hover{ border-bottom-color: var(--accent); color: var(--accent); }
+  .foot-bottom{
+    display:flex; justify-content:space-between;
+    padding-top: 28px;
+    font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  @media (max-width: 760px){
+    .foot-grid{ grid-template-columns: 1fr; }
+    .foot-bottom{ flex-direction: column; gap: 12px; }
+  }
+
+  /* Tweaks toggle hint */
+  #tweaks-root{ z-index: 100; }
+</style>
+</head>
+<body class="palette-cream font-outfit">
+
+<header class="topbar">
+  <div class="mark">Phurimart <em>Sudanich</em></div>
+  <nav>
+    <a href="#portrait">Portrait</a>
+    <a href="#street">Street</a>
+    <a href="#graduation">Graduation</a>
+    <a href="#lifestyle">Lifestyle</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<!-- ─────────── HERO ─────────── -->
+<section class="hero" data-screen-label="01 Hero">
+  <div class="hero-text">
+    <div class="hero-eyebrow">Portfolio · 2020 — 2026</div>
+    <h1 class="hero-title">
+      Light, faces,<br>
+      and the <em>quiet hours</em><br>
+      in between.
+    </h1>
+    <p class="hero-sub">
+      Portrait & street photographer based in Thailand. Working with natural light, soft tones, and the small moments that tell a bigger story.
+    </p>
+    <div class="hero-meta">
+      <span><strong>140+</strong>Sessions</span>
+      <span><strong>06</strong>Years shooting</span>
+      <span><strong>TH</strong>Based in Thailand</span>
+    </div>
+  </div>
+  <div class="hero-image">
+    <img src="images/portrait/IMG_0299.jpg" alt="">
+    <div class="caption">Bangkok · Winter Lights</div>
+  </div>
+</section>
+
+<!-- ─────────── Marquee ─────────── -->
+<div class="strip" aria-hidden="true">
+  <div class="strip-track">
+    <span>Portrait</span><span>Street</span><span>Graduation</span><span>Lifestyle</span>
+    <span>Portrait</span><span>Street</span><span>Graduation</span><span>Lifestyle</span>
+    <span>Portrait</span><span>Street</span><span>Graduation</span><span>Lifestyle</span>
+  </div>
+</div>
+
+<!-- ─────────── PORTRAIT ─────────── -->
+<section class="sec" id="portrait" data-screen-label="02 Portrait">
+  <div class="sec-head">
+    <div class="sec-no">i.</div>
+    <h2 class="sec-title">Portrait</h2>
+    <div class="sec-meta">
+      <b>07 Frames</b>
+      Natural light · Studio
+    </div>
+  </div>
+  <div class="gallery">
+    <figure class="frame p1 is-portrait">
+      <img src="images/portrait/IMG_0043.jpg" loading="lazy" alt="">
+      <figcaption>Golden hour · Ubon</figcaption>
+    </figure>
+    <figure class="frame p2 is-wide">
+      <img src="images/portrait/IMG_0299.jpg" loading="lazy" alt="">
+      <figcaption>Winter lights</figcaption>
+    </figure>
+    <figure class="frame p3">
+      <img src="images/portrait/IMG_0332.jpg" loading="lazy" alt="">
+      <figcaption>Bokeh nights</figcaption>
+    </figure>
+    <figure class="frame p4">
+      <img src="images/portrait/IMG_0365.jpg" loading="lazy" alt="">
+      <figcaption>Backlit</figcaption>
+    </figure>
+    <figure class="frame p5 is-portrait">
+      <img src="images/portrait/IMG_0368.jpg" loading="lazy" alt="">
+      <figcaption>Soft turtleneck</figcaption>
+    </figure>
+    <figure class="frame p6 is-portrait">
+      <img src="images/portrait/IMG_0168.JPG" loading="lazy" alt="">
+      <figcaption>Lavender scrunchie</figcaption>
+    </figure>
+    <figure class="frame p7 is-wide">
+      <img src="images/portrait/IMG_0051.JPG" loading="lazy" alt="">
+      <figcaption>Cross-legged, headphones on</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ─────────── STREET ─────────── -->
+<section class="sec" id="street" data-screen-label="03 Street" style="background: var(--bg-alt);">
+  <div class="sec-head">
+    <div class="sec-no">ii.</div>
+    <h2 class="sec-title">Street</h2>
+    <div class="sec-meta">
+      <b>02 Frames</b>
+      Documentary · Daily life
+    </div>
+  </div>
+  <div class="gallery">
+    <figure class="frame s1 is-wide">
+      <img src="images/street/IMG_7414.jpg" loading="lazy" alt="">
+      <figcaption>Gas delivery · Khon Kaen</figcaption>
+    </figure>
+    <figure class="frame s2 is-wide">
+      <img src="images/street/IMG_7445.jpg" loading="lazy" alt="">
+      <figcaption>Pink shirt, sidewalk</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ─────────── GRADUATION ─────────── -->
+<section class="sec" id="graduation" data-screen-label="04 Graduation">
+  <div class="sec-head">
+    <div class="sec-no">iii.</div>
+    <h2 class="sec-title">Graduation</h2>
+    <div class="sec-meta">
+      <b>03 Frames</b>
+      Commissioned · 2023
+    </div>
+  </div>
+  <div class="gallery">
+    <figure class="frame g1 is-wide">
+      <img src="images/graduation/IMG_5963.JPG" loading="lazy" alt="">
+      <figcaption>By the white fence</figcaption>
+    </figure>
+    <figure class="frame g2 is-wide">
+      <img src="images/graduation/IMG_5979.JPG" loading="lazy" alt="">
+      <figcaption>Sunlit lane</figcaption>
+    </figure>
+    <figure class="frame g3 is-wide">
+      <img src="images/graduation/IMG_6060.JPG" loading="lazy" alt="">
+      <figcaption>Clear blue, clear day</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ─────────── LIFESTYLE ─────────── -->
+<section class="sec" id="lifestyle" data-screen-label="05 Lifestyle" style="background: var(--bg-alt);">
+  <div class="sec-head">
+    <div class="sec-no">iv.</div>
+    <h2 class="sec-title">Lifestyle</h2>
+    <div class="sec-meta">
+      <b>04 Frames</b>
+      Cafés · Studio · City
+    </div>
+  </div>
+  <div class="gallery">
+    <figure class="frame l1 is-portrait">
+      <img src="images/lifestyle/IMG_5045.jpg" loading="lazy" alt="">
+      <figcaption>Afternoon, iced cocoa</figcaption>
+    </figure>
+    <figure class="frame l2 is-wide">
+      <img src="images/lifestyle/IMG_4880.JPG" loading="lazy" alt="">
+      <figcaption>Lemon cake, window light</figcaption>
+    </figure>
+    <figure class="frame l3 is-wide">
+      <img src="images/lifestyle/IMG_4812.JPG" loading="lazy" alt="">
+      <figcaption>Dried flowers, soft focus</figcaption>
+    </figure>
+    <figure class="frame l4 is-wide">
+      <img src="images/lifestyle/IMG_5456-2.jpg" loading="lazy" alt="">
+      <figcaption>Café mirror</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ─────────── ABOUT ─────────── -->
+<section class="about" id="about" data-screen-label="06 About">
+  <div class="about-inner">
+    <img src="images/about/IMG_3152.jpg" alt="Phurimart Sudanich">
+    <div>
+      <div class="about-eyebrow">About</div>
+      <h2>
+        I make pictures that feel <em>familiar</em> — like a memory you almost forgot.
+      </h2>
+      <p>
+        ฉันเป็นช่างภาพอิสระจากประเทศไทย ที่หลงรักแสงธรรมชาติ บรรยากาศที่อ่อนโยน และโมเมนต์เงียบๆ ที่บอกเล่าเรื่องราวได้มากกว่าคำพูด
+      </p>
+      <p>
+        Most of my work lives somewhere between portrait and documentary — train platforms, cafés, graduation lanes, golden-hour streets. I shoot mostly with available light, and I edit gently. The goal is always to keep the warmth of the moment intact.
+      </p>
+      <div class="about-stats">
+        <div><strong>06</strong><span>Years</span></div>
+        <div><strong>140+</strong><span>Sessions</span></div>
+        <div><strong>04</strong><span>Series</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── CONTACT ─────────── -->
+<footer class="foot" id="contact" data-screen-label="07 Contact">
+  <div class="foot-grid">
+    <h3>Let's make<br>something <em>quiet</em><br>and beautiful.</h3>
+    <div class="foot-col">
+      <h4>Get in touch</h4>
+      <a href="tel:0960978924">096 097 8924</a>
+      <a href="https://www.facebook.com/prm.sdn/" target="_blank" rel="noopener">facebook.com/prm.sdn</a>
+    </div>
+    <div class="foot-col">
+      <h4>Available for</h4>
+      <p>Portrait sessions</p>
+      <p>Graduation</p>
+      <p>Editorial · Lifestyle</p>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 Phurimart Sudanich</span>
+    <span>Portrait & Street · Thailand</span>
+  </div>
+</footer>
+
+<div id="tweaks-root"></div>
+
+<!-- Tweaks panel -->
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel">
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "palette": "dusk",
+    "layout": "scroll",
+    "font": "outfit"
+  }/*EDITMODE-END*/;
+
+  function applyTweaks(t){
+    const body = document.body;
+    body.classList.remove('palette-cream','palette-sand','palette-rose','palette-mono','palette-dusk');
+    body.classList.add('palette-' + t.palette);
+    body.classList.remove('layout-editorial','layout-grid','layout-full','layout-scroll');
+    body.classList.add('layout-' + t.layout);
+    body.classList.remove('font-outfit','font-dm','font-mixed');
+    body.classList.add('font-' + t.font);
+  }
+  applyTweaks(TWEAK_DEFAULTS);
+
+  function App(){
+    const { useTweaks, TweaksPanel, TweakSection, TweakRadio, TweakSelect, TweakColor } = window;
+    const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+    React.useEffect(()=>{ applyTweaks(t); }, [t]);
+
+    return (
+      <TweaksPanel title="Tweaks">
+        <TweakSection title="Palette">
+          <TweakSelect
+            label="Color mood"
+            value={t.palette}
+            onChange={v => setTweak('palette', v)}
+            options={[
+              { value:'cream', label:'Warm cream' },
+              { value:'sand',  label:'Sand' },
+              { value:'rose',  label:'Soft rose' },
+              { value:'mono',  label:'Mono warm' },
+              { value:'dusk',  label:'Dusk (dark)' },
+            ]}
+          />
+        </TweakSection>
+
+        <TweakSection title="Layout">
+          <TweakSelect
+            label="Gallery style"
+            value={t.layout}
+            onChange={v => setTweak('layout', v)}
+            options={[
+              { value:'editorial', label:'Editorial mix (default)' },
+              { value:'grid',      label:'Uniform grid' },
+              { value:'full',      label:'Full-bleed stack' },
+              { value:'scroll',    label:'Horizontal scroll' },
+            ]}
+          />
+        </TweakSection>
+
+        <TweakSection title="Type">
+          <TweakRadio
+            label="Font"
+            value={t.font}
+            onChange={v => setTweak('font', v)}
+            options={[
+              { value:'outfit', label:'Outfit' },
+              { value:'dm',     label:'DM Sans' },
+              { value:'mixed',  label:'Mixed' },
+            ]}
+          />
+        </TweakSection>
+      </TweaksPanel>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('tweaks-root')).render(<App />);
+</script>
+</body>
+</html>
